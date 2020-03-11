@@ -20,17 +20,17 @@ nav.navbar.navbar-expand-lg.navbar-dark.bg-dark.static-top
             | Home
             span.sr-only (current)
         li.nav-item
-          a.nav-link(href='/Map') Map
+          a.nav-link(href='#') Map
         li.nav-item
-          a.nav-link(href='/Board') Board
+          a.nav-link(href='#') Board
         li.nav-item
-          a.nav-link(href='/Login') Login
+          a.nav-link(href='#') Login
 // Page Content
 .container
   .row
     .col-lg-12.text-center
-      h1.mt-5 EV Station에 방문하신 것을 환영합니다!
-      p.lead 전기차 충전소의 정보를 간편하게 보여드립니다!
+      h1.mt-5 #{errorCode}
+      p.lead #{errorMessage}
 // Bootstrap core JavaScript
 script(src='vendor/jquery/jquery.slim.min.js')
 script(src='vendor/bootstrap/js/bootstrap.bundle.min.js')
