@@ -1,0 +1,30 @@
+extends layout
+
+block content
+    .col-lg-12.text-center
+        link(rel='stylesheet' href='https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css' integrity='sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm' crossorigin='anonymous')
+        title Login
+        .card.align-middle(style='width:20rem; border-radius:20px;')
+        .card-title(style='margin-top:30px;')
+            h2.card-title.text-center(style='color:#113366;') Login
+        .card-body
+            form#login-form(action='/auth/login' method='post')
+                h5.form-signin-heading EV_Station 은 로그인 후 이용 가능한 서비스 입니다.
+                label.sr-only(for='inputEmail') email
+                input#uid.form-control(type='text' placeholder='Your ID' required='' autofocus='' name='email')
+                br
+                label.sr-only(for='inputPassword') Password
+                input#upw.form-control(type='password' placeholder='Password' required='' name='password')
+                br
+                button#btn-Yes.btn.btn-lg.btn-primary.btn-block(type='submit') login
+                br
+                a#kakao.btn(href='/join') 회원가입
+                a#kakao.btn(href='/auth/kakao') 카카오톡 로그인
+        .modal
+
+        // Bootstrap core JavaScript
+        script(src='vendor/jquery/jquery.slim.min.js')
+        script(src='vendor/bootstrap/js/bootstrap.bundle.min.js')
+        script(src='https://code.jquery.com/jquery-3.2.1.slim.min.js' integrity='sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN' crossorigin='anonymous')
+        script(src='https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js' integrity='sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q' crossorigin='anonymous')
+        script(src='https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js' integrity='sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl' crossorigin='anonymous')
