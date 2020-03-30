@@ -14,7 +14,6 @@ router.post('/join', isNotLoggedIn, async (req, res, next) => {
             req.flash('joinError', '이미 가입된 메일 입니다.');
             return res.redirect('/join');
         }
-        console.log(req.body);
     const hash = await bcrypt.hash(password, 12);
     await userInfo.create({
         email,
@@ -61,5 +60,25 @@ router.get('/kakao', passport.authenticate('kakao', {
 }), (req, res) => {
     res.redirect('/');
 });
+
+router.post('/edit', isLoggedIn, async (req, res, next) => {
+    const { email, password, nickname, myCar, id } = req.body;
+    try{
+        let hash = '';
+        if(password !== ''){ 
+            hash = await bcrypt.hash(password, 12); 
+        }
+        await userInfo.update({
+            email : email,
+            password : hash,
+            nickname : nickname,
+            myCar : myCar
+        }, { where : { id } });
+        return res.redirect('/');
+    } catch(error) {
+        console.error(error);
+        return next(error);
+    }
+})
 
 module.exports = router;

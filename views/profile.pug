@@ -1,0 +1,10 @@
+extends layout
+
+block content
+    .col-lg-12
+        h1.mt-5 나의 정보
+        p.lead.user-name='닉네임 : ' + user.nickname
+        p.lead.user-email='이메일 : ' + user.email
+        p.lead.user-myCar='보유 차량 : ' + user.myCar
+        br
+        a#edit.btn(href='/edit') 정보 수정

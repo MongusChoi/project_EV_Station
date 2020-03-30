@@ -15,24 +15,30 @@ block content
     .wrapper.wrapper--w680
         .card.card-4
         .card-body
-            h2.title 회원가입
-            form#join-form(action='/auth/join' method='post')
-                .row.row-space
-                    .col-2
-                    .input-group
-                        label.label 이메일
-                        input.input--style-4(type='email' required='' name='email')
-                .row.row-space
-                    .col-2
-                    .input-group
-                        label.label 비밀번호
-                        input.input--style-4(type='password' required='' name='password')
-                .row.row-space
-                    .col-2
-                    .input-group
-                        label.label 닉네임
-                        input.input--style-4(type='text' required='' name='nickname')
+            h2.title 정보수정
+            form#join-form(action='/auth/edit' method='post')
+                if user.provider==='local'
+                    .row.row-space
+                        .col-2
+                        .input-group
+                            label.label 이메일
+                            input.input--style-4(type='email' name='email' required='' value=user.email)
+                    .row.row-space
+                        .col-2
+                        .input-group
+                            label.label 비밀번호
+                            input.input--style-4(type='password' name='password' required='')
+                    .row.row-space
+                        .col-2
+                        .input-group
+                            label.label 닉네임
+                            input.input--style-4(type='text' name='nickname' required='' value=user.nickname)
+                else
+                    input.input--style-4(type='hidden' name='email' value=user.email)
+                    input.input--style-4(type='hidden' name='password')
+                    input.input--style-4(type='hidden' name='nickname' value=user.nickname)
                 .input-group
+                    input.input--style-4(type='hidden' name='id' value=user.id)
                     label.label 소유 차량
                     .rs-select2.js-select-simple.select--no-search
                         select(name='myCar' required='')

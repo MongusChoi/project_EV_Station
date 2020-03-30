@@ -4,8 +4,7 @@ const router = express.Router();
 
 router.get('/profile', isLoggedIn, (req, res) => {
   res.render('profile', {
-    head : "안녕하세요?",
-    text : `${req.user} 님!`
+    user : req.user
   })
 });
 
@@ -23,5 +22,11 @@ router.get('/', function(req, res, next) {
     user : req.user
   });
 });
+
+router.get('/edit', isLoggedIn, (req, res, next) => {
+  res.render('authEdit', {
+      user : req.user
+  });
+})
 
 module.exports = router;
