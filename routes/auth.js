@@ -79,6 +79,10 @@ router.post('/edit', isLoggedIn, async (req, res, next) => {
         console.error(error);
         return next(error);
     }
-})
+});
+
+router.get('/delete', isLoggedIn, async (req, res) => {
+    res.render('authDelete');
+  });
 
 module.exports = router;

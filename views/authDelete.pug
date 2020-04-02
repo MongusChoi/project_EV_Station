@@ -1,0 +1,12 @@
+extends layout
+
+block content
+    .col-lg-12
+        h1.mt-5 비밀번호를 입력하세요
+        form#join-form(action='/auth/delete/confirm' method='post')
+            input.input--style-4(type='password' name='password' required='')
+            .p-t-15
+                    button.btn.btn--radius-2.btn--blue(type='submit') Submit
+        if error
+            h1.mt-5 비밀번호가 틀립니다
+        

@@ -2,15 +2,15 @@ extends layout
 
 block content
     // Icons font CSS
-    link(href='vendor2/mdi-font/css/material-design-iconic-font.min.css' rel='stylesheet' media='all')
-    link(href='vendor2/font-awesome-4.7/css/font-awesome.min.css' rel='stylesheet' media='all')
+    link(href='/vendor2/mdi-font/css/material-design-iconic-font.min.css' rel='stylesheet' media='all')
+    link(href='/vendor2/font-awesome-4.7/css/font-awesome.min.css' rel='stylesheet' media='all')
     // Font special for pages
     //link(href='https://fonts.googleapis.com/css?family=Poppins:100,100i,200,200i,300,300i,400,400i,500,500i,600,600i,700,700i,800,800i,900,900i' rel='stylesheet')
     // vendor2 CSS
-    link(href='vendor2/select2/select2.min.css' rel='stylesheet' media='all')
-    link(href='vendor2/datepicker/daterangepicker.css' rel='stylesheet' media='all')
+    link(href='/vendor2/select2/select2.min.css' rel='stylesheet' media='all')
+    link(href='/vendor2/datepicker/daterangepicker.css' rel='stylesheet' media='all')
     // Main CSS
-    link(href='stylesheets/style.css' rel='stylesheet' media='all')
+    link(href='./public/stylesheets/style.css' rel='stylesheet' media='all')
     .page-wrapper.bg-gra-02.p-t-130.p-b-100.font-poppins
     .wrapper.wrapper--w680
         .card.card-4
@@ -58,12 +58,12 @@ block content
                 .p-t-15
                     button.btn.btn--radius-2.btn--blue(type='submit') Submit
     // Jquery JS
-    script(src='vendor2/jquery/jquery.min.js')
+    script(src='/vendor2/jquery/jquery.min.js')
     // vendor2 JS
-    script(src='vendor2/select2/select2.min.js')
-    script(src='vendor2/datepicker/moment.min.js')
-    script(src='vendor2/datepicker/daterangepicker.js')
+    script(src='/vendor2/select2/select2.min.js')
+    script(src='/vendor2/datepicker/moment.min.js')
+    script(src='/vendor2/datepicker/daterangepicker.js')
     // Main JS
-    script(src='javascripts/global.js')
+    script(src='/javascripts/global.js')
     // This templates was made by Colorlib (https://colorlib.com)
     // end document

@@ -8,6 +8,12 @@ router.get('/profile', isLoggedIn, (req, res) => {
   })
 });
 
+router.get('/edit', isLoggedIn, (req, res, next) => {
+  res.render('authEdit', {
+      user : req.user
+  });
+});
+
 router.get('/login', isNotLoggedIn, (req, res) => {
   res.render('login');
 })
@@ -22,11 +28,5 @@ router.get('/', function(req, res, next) {
     user : req.user
   });
 });
-
-router.get('/edit', isLoggedIn, (req, res, next) => {
-  res.render('authEdit', {
-      user : req.user
-  });
-})
 
 module.exports = router;
