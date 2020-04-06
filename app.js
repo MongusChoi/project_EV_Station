@@ -6,6 +6,7 @@ const cookieParser = require('cookie-parser');
 const flash = require('connect-flash');
 const logger = require('morgan');
 const passport = require('passport');
+const got = require('got');
 require('dotenv').config();
 
 const indexRouter = require('./routes/index');
@@ -65,6 +66,15 @@ app.use(function(err, req, res, next) {
     user:req.user
   });
 });
+
+(async () => {
+  try {
+    const response = await got.get(process.env.API_LINK);
+    console.log('api data : ' + response.body);
+  } catch (error) {
+    console.error(error);
+  }
+})();
 
 app.listen(app.get('port'), () => {
   console.log(app.get('port'), '번 포트에서 대기중');
