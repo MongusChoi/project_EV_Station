@@ -55,33 +55,59 @@ const logout = (isLoggedIn, (req, res) => {
 });
 
 const kakaoLogin = (passport.authenticate('kakao', {
-    failureRedirect : '/'
+    failureRedirect: '/'
 }), (req, res) => {
     res.redirect('/');
 });
 
 const edit = (isLoggedIn, async (req, res, next) => {
     const { email, password, nickname, myCar, id } = req.body;
-    try{
+    try {
         let hash = '';
-        if(password !== ''){ 
-            hash = await bcrypt.hash(password, 12); 
+        if (password !== '') {
+            hash = await bcrypt.hash(password, 12);
         }
         await userInfo.update({
-            email : email,
-            password : hash,
-            nickname : nickname,
-            myCar : myCar
-        }, { where : { id } });
+            email: email,
+            password: hash,
+            nickname: nickname,
+            myCar: myCar
+        }, { where: { id } });
         return res.redirect('/');
-    } catch(error) {
+    } catch (error) {
         console.error(error);
         return next(error);
     }
 });
 
 const authDelete = (isLoggedIn, (req, res) => {
-    res.render('authDelete');
+    res.render('authDelete', {
+        user: req.user,
+        error: req.session.valid
+    });
+})
+
+const authDeleteConfirm = (isLoggedIn, async (req, res, next) => {
+    const { id, password } = req.body;
+    try {
+        const user = await userInfo.findOne({ where: { id } });
+        const result = await bcrypt.compare(password, user.password);
+        if (!result) {
+            req.session.valid = false;
+            return res.redirect('/auth/delete')
+        }
+        await userInfo.update({
+            email: '',
+            password: '',
+            nickname: '탈퇴한 유저'
+        }, { where : { id } });
+        req.logout();
+        req.session.destroy();
+        return res.redirect('/');
+    } catch (error) {
+        console.error(error);
+        return next(error);
+    }
 })
 
 module.exports = {
@@ -90,5 +116,6 @@ module.exports = {
     logout,
     kakaoLogin,
     edit,
-    authDelete
+    authDelete,
+    authDeleteConfirm
 }

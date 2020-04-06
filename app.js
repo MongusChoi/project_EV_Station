@@ -70,7 +70,7 @@ app.use(function(err, req, res, next) {
 (async () => {
   try {
     const response = await got.get(process.env.API_LINK);
-    console.log('api data : ' + response.body);
+    //console.log('api data : ' + response.body);
   } catch (error) {
     console.error(error);
   }
