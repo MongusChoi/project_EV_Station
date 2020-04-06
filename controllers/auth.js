@@ -35,7 +35,7 @@ const login = (isLoggedIn, (req, res, next) => {
             return next(authError);
         }
         if (!user) {
-            req.flash('loginError', info.message);
+            req.session.valid = false;
             return res.redirect('/login');
         }
         return req.login(user, (loginError) => {
@@ -43,6 +43,7 @@ const login = (isLoggedIn, (req, res, next) => {
                 console.error(loginError);
                 return next(loginError);
             }
+            req.session.valid = true;
             return res.redirect('/');
         });
     })(req, res, next);

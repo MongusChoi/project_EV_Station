@@ -16,7 +16,9 @@ router.get('/edit', isLoggedIn, (req, res, next) => {
 });
 
 router.get('/login', isNotLoggedIn, (req, res) => {
-  res.render('login');
+  res.render('login', {
+    error : req.session.valid
+  });
 })
 
 router.get('/join', isNotLoggedIn, (req, res) => {
