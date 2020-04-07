@@ -1,6 +1,8 @@
 const createError = require('http-errors');
+const https = require('https');
 const express = require('express');
 const path = require('path');
+const fs = require('fs');
 const session = require('express-session');
 const cookieParser = require('cookie-parser');
 const flash = require('connect-flash');
@@ -14,6 +16,11 @@ const usersRouter = require('./routes/users');
 const sequelize = require('./models').sequelize;
 const authRouter = require('./routes/auth');
 const passportConfig = require('./passport');
+
+const ssl_options = {
+  cert : fs.readFileSync('/etc/letsencrypt/live/evstation.mongus.shop/fullchain.pem'),
+  key : fs.readFileSync('/etc/letsencrypt/live/evstation.mongus.shop/privkey.pem')
+}
 
 const app = express();
 sequelize.sync();
@@ -76,6 +83,10 @@ app.use(function(err, req, res, next) {
   }
 })();
 
-app.listen(app.get('port'), () => {
-  console.log(app.get('port'), '번 포트에서 대기중');
-});
+const ssl_Server = https.createServer(ssl_options).listen(443, () => {
+  console.log(443, '번 포트에서 대기중');
+})
+
+// app.listen(app.get('port'), () => {
+//   console.log(app.get('port'), '번 포트에서 대기중');
+// });
