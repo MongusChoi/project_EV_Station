@@ -84,7 +84,7 @@ app.use(function(err, req, res, next) {
   }
 })();
 
-const ssl_Server = https.createServer(ssl_options).listen(443, () => {
+const ssl_Server = https.createServer(ssl_options).listen(3443, () => {
   console.log(443, '번 포트에서 대기중');
 })
 
