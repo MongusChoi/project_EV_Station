@@ -18,7 +18,8 @@ const authRouter = require('./routes/auth');
 const passportConfig = require('./passport');
 
 const ssl_options = {
-  cert : fs.readFileSync('/etc/letsencrypt/live/evstation.mongus.shop/fullchain.pem'),
+  ca : fs.readFileSync('/etc/letsencrypt/live/evstation.mongus.shop/fullchain.pem'),
+  cert : fs.readFileSync('/etc/letsencrypt/live/evstation.mongus.shop/cert.pem'),
   key : fs.readFileSync('/etc/letsencrypt/live/evstation.mongus.shop/privkey.pem')
 }
 
