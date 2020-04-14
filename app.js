@@ -17,31 +17,24 @@ const sequelize = require('./models').sequelize;
 const authRouter = require('./routes/auth');
 const passportConfig = require('./passport');
 
-const lex = require('greenlock-express').create({
-  version : 'draft-11',
-  configDir : '/etc/letsencrypt/live/evstation.mongus.shop/',
-  server : 'https://acme-v02.api.letsencrypt.org/directory',
-  approveDomains : (opts, certs, cb) => {
-    if(certs) {
-      opts.domains = ['evstation.mongus.shop'];
-    } else {
-      opts.email = 'mongus.c@gmail.com';
-      opts.agreeTos = true;
-    }
-    cb(null, { options : opts, certs });
-  },
-  renewWithin : 81 * 24 * 60 * 60 * 1000,
-  renewBy: 80 * 24 * 60 * 60 * 1000
-});
-
 const app = express();
 sequelize.sync();
 passportConfig(passport);
 
+const privateKey = fs.readFileSync('/etc/letsencrypt/live/evstation.mongus.shop/privkey.pem', 'utf8');
+const certificate = fs.readFileSync('/etc/letsencrypt/live/evstation.mongus.shop/cert.pem', 'utf8');
+const ca = fs.readFileSync('/etc/letsencrypt/live/evstation.mongus.shop/chain.pem', 'utf8');
+
+const credentials = {
+	key: privateKey,
+	cert: certificate,
+	ca: ca
+};
+
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'pug');
-app.set('port', process.env.PORT || 443);
+app.set('port', process.env.PORT || 80);
 
 app.use(logger('dev'));
 app.use(express.json());
@@ -86,17 +79,24 @@ app.use(function(err, req, res, next) {
   });
 });
 
-(async () => {
-  try {
-    const response = await got.get(process.env.API_LINK);
-    //console.log('api data : ' + response.body);
-  } catch (error) {
-    console.error(error);
-  }
-})();
+// 전기차 api test
+// (async () => {
+//   try {
+//     const response = await got.get(process.env.API_LINK);
+//     //console.log('api data : ' + response.body);
+//   } catch (error) {
+//     console.error(error);
+//   }
+// })();
 
-https.createServer(lex.httpsOptions, lex.middleware(app)).listen(process.env.SSL_PORT || 3443);
-http.createServer(lex.middleware(require('redirect-https')())).listen(process.env.PORT || 3080);
+const httpsServer = https.createServer(credentials, app);
+
+httpsServer.listen(443, () => {
+  console.log(app.get('port'), '번 포트에서 대기중...');
+})
+
+// https.createServer(lex.httpsOptions, lex.middleware(app)).listen(process.env.SSL_PORT || 3443);
+// http.createServer(lex.middleware(require('redirect-https')())).listen(process.env.PORT || 3080);
 
 // app.listen(app.get('port'), () => {
 //   console.log(app.get('port'), '번 포트에서 대기중');
