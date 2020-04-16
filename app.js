@@ -21,9 +21,9 @@ const app = express();
 sequelize.sync();
 passportConfig(passport);
 
-const privateKey = fs.readFileSync('/etc/letsencrypt/live/evstation.mongus.shop/privkey.pem', 'utf8');
-const certificate = fs.readFileSync('/etc/letsencrypt/live/evstation.mongus.shop/cert.pem', 'utf8');
-const ca = fs.readFileSync('/etc/letsencrypt/live/evstation.mongus.shop/chain.pem', 'utf8');
+const privateKey = fs.readFileSync('config/privkey.pem', 'utf8');
+const certificate = fs.readFileSync('config/cert.pem', 'utf8');
+const ca = fs.readFileSync('config/chain.pem', 'utf8');
 
 const credentials = {
 	key: privateKey,
