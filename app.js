@@ -21,20 +21,20 @@ const app = express();
 sequelize.sync();
 passportConfig(passport);
 
-const privateKey = fs.readFileSync('config/privkey.pem', 'utf8');
-const certificate = fs.readFileSync('config/cert.pem', 'utf8');
-const ca = fs.readFileSync('config/chain.pem', 'utf8');
+//const privateKey = fs.readFileSync('config/privkey.pem', 'utf8');
+//const certificate = fs.readFileSync('config/cert.pem', 'utf8');
+//const ca = fs.readFileSync('config/chain.pem', 'utf8');
 
-const credentials = {
-	key: privateKey,
-	cert: certificate,
-	ca: ca
-};
+//const credentials = {
+//	key: privateKey,
+//	cert: certificate,
+//	ca: ca
+//};
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'pug');
-app.set('port', process.env.PORT || 443);
+app.set('port', process.env.PORT || 9000);
 
 app.use(logger('dev'));
 app.use(express.json());
@@ -89,15 +89,13 @@ app.use(function(err, req, res, next) {
 //   }
 // })();
 
-const httpsServer = https.createServer(credentials, app);
-
-httpsServer.listen(443, () => {
-  console.log(app.get('port'), '번 포트에서 대기중...');
-})
+//https.createServer(credentials, (req, res) => {
+//	console.log(app.get('port'), '번 포트에서 대기중...!');
+//}).listen(app.get('port'));
 
 // https.createServer(lex.httpsOptions, lex.middleware(app)).listen(process.env.SSL_PORT || 3443);
 // http.createServer(lex.middleware(require('redirect-https')())).listen(process.env.PORT || 3080);
 
-// app.listen(app.get('port'), () => {
-//   console.log(app.get('port'), '번 포트에서 대기중');
-// });
+app.listen(app.get('port'), () => {
+   console.log(app.get('port'), '번 포트에서 대기중');
+});
