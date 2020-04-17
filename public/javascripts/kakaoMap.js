@@ -20,27 +20,13 @@ map.addControl(mapTypeControl, kakao.maps.ControlPosition.TOPRIGHT);
 var zoomControl = new kakao.maps.ZoomControl();
 map.addControl(zoomControl, kakao.maps.ControlPosition.RIGHT);
 
-$(function(){
-    if(navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition ((pos) => {
-            curLatitude = pos.coords.latitude;
-            curLongitude = pos.coords.longitude;
-            console.log('success');
-        });
-    } else {
-            console.log('fail');
-            alert('현재 브라우저는 Geolocation이 지원하지 않음.');
-    }
-})
-
 $('#curPos').click(function(){
     navigator.geolocation.getCurrentPosition ((pos) => {
         console.log('sucess');
     }, (error) => {
         console.log(error.message);
-        // curLatitude = pos.coords.latitude;
-        // curLongitude = pos.coords.longitude;
-        // console.log('success');
+        curLatitude = pos.coords.latitude;
+        curLongitude = pos.coords.longitude;
     });
     let moveLatLon = new kakao.maps.LatLng(curLatitude, curLongitude);
     map.panTo(moveLatLon);
