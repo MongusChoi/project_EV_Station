@@ -1,14 +1,11 @@
 const createError = require('http-errors');
-const https = require('https');
 const express = require('express');
 const path = require('path');
-const fs = require('fs');
 const session = require('express-session');
 const cookieParser = require('cookie-parser');
 const flash = require('connect-flash');
 const logger = require('morgan');
 const passport = require('passport');
-const got = require('got');
 require('dotenv').config();
 
 const indexRouter = require('./routes/index');
@@ -20,16 +17,6 @@ const passportConfig = require('./passport');
 const app = express();
 sequelize.sync();
 passportConfig(passport);
-
-//const privateKey = fs.readFileSync('config/privkey.pem', 'utf8');
-//const certificate = fs.readFileSync('config/cert.pem', 'utf8');
-//const ca = fs.readFileSync('config/chain.pem', 'utf8');
-
-//const credentials = {
-//	key: privateKey,
-//	cert: certificate,
-//	ca: ca
-//};
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -88,13 +75,6 @@ app.use(function(err, req, res, next) {
 //     console.error(error);
 //   }
 // })();
-
-//https.createServer(credentials, (req, res) => {
-//	console.log(app.get('port'), '번 포트에서 대기중...!');
-//}).listen(app.get('port'));
-
-// https.createServer(lex.httpsOptions, lex.middleware(app)).listen(process.env.SSL_PORT || 3443);
-// http.createServer(lex.middleware(require('redirect-https')())).listen(process.env.PORT || 3080);
 
 app.listen(app.get('port'), () => {
    console.log(app.get('port'), '번 포트에서 대기중');
