@@ -1,6 +1,15 @@
 let curLatitude = 37.5665734;
 let curLongitude = 126.978179;
 
+if(navigator.geolocation) {
+    navigator.geolocation.getCurrentPosition((pos) => {
+        curLatitude = pos.coords.latitude;
+	curLongitude = pos.coords.longitude;
+    });
+} else {
+    console.log('geolocation을 사용할 수 없음.');
+}
+
 var container = document.getElementById('map');
 var options = {
     center: new kakao.maps.LatLng(curLatitude, curLongitude),
