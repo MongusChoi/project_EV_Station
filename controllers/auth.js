@@ -55,11 +55,13 @@ const logout = (isLoggedIn, (req, res) => {
     res.redirect('/');
 });
 
-const kakaoLogin = (passport.authenticate('kakao', {
-    failureRedirect: '/'
+const kakaoLogin = (isNotLoggedIn, passport.authenticate('kakao', {
+    failureRedirect: '/login'
 }), (req, res) => {
     res.redirect('/');
+    console.log('kakao login success');
 });
+
 
 const edit = (isLoggedIn, async (req, res, next) => {
     const { email, password, nickname, myCar, id } = req.body;
