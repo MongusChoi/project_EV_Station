@@ -586,6 +586,7 @@ pre code {
 }
 
 .row {
+  height: 92vh;
   display: -ms-flexbox;
   display: flex;
   -ms-flex-wrap: wrap;
