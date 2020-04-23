@@ -13,6 +13,7 @@ const usersRouter = require('./routes/users');
 const sequelize = require('./models').sequelize;
 const authRouter = require('./routes/auth');
 const passportConfig = require('./passport');
+const stationConfig = require('./controllers/station');
 
 const app = express();
 sequelize.sync();
@@ -66,15 +67,8 @@ app.use(function(err, req, res, next) {
   });
 });
 
-// 전기차 api test
-// (async () => {
-//   try {
-//     const response = await got.get(process.env.API_LINK);
-//     //console.log('api data : ' + response.body);
-//   } catch (error) {
-//     console.error(error);
-//   }
-// })();
+// 전기차 충전소 데이터 모듈, 데이터 삽입부분 추가
+stationConfig.insert();
 
 app.listen(app.get('port'), () => {
    console.log(app.get('port'), '번 포트에서 대기중');
