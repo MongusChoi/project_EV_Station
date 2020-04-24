@@ -1,15 +1,7 @@
 let curLatitude = 37.5665734;
 let curLongitude = 126.978179;
 let currentMarker = null;
-
-if(navigator.geolocation) {
-    navigator.geolocation.getCurrentPosition((pos) => {
-        curLatitude = pos.coords.latitude;
-	curLongitude = pos.coords.longitude;
-    });
-} else {
-    console.log('geolocation을 사용할 수 없음.');
-}
+let stationMarkers = [];
 
 var container = document.getElementById('map');
 var options = {
@@ -19,12 +11,14 @@ var options = {
 
 var map = new kakao.maps.Map(container, options);
 
-// 일반 지도와 스카이뷰로 지도 타입을 전환할 수 있는 지도타입 컨트롤을 생성합니다
-//var mapTypeControl = new kakao.maps.MapTypeControl();
+// 지도 확대 축소를 제어할 수 있는  줌 컨트롤을 생성
+var zoomControl = new kakao.maps.ZoomControl();
+map.addControl(zoomControl, kakao.maps.ControlPosition.RIGHT);
 
-// 지도에 컨트롤을 추가해야 지도위에 표시됩니다
-// kakao.maps.ControlPosition은 컨트롤이 표시될 위치를 정의하는데 TOPRIGHT는 오른쪽 위를 의미합니다
-//map.addControl(mapTypeControl, kakao.maps.ControlPosition.TOPRIGHT);
+// // 충전소 마커 최초 생성
+// if(stationMarkers.length === 0) {
+//     initStationMarkers();
+// }
 
 // custom controll
 function setCurLocation() {
@@ -61,19 +55,22 @@ function setCurMarker(position) {
     currentMarker.setMap(map);
 }
 
-// 지도 확대 축소를 제어할 수 있는  줌 컨트롤을 생성합니다
-var zoomControl = new kakao.maps.ZoomControl();
-map.addControl(zoomControl, kakao.maps.ControlPosition.RIGHT);
+// station 마커 최초 생성
+function initStationMarkers(){
+    mapArr.forEach((item) => {
+        let markerPosition = new kakao.maps.LatLng(item.dataValues.lat, item.dataValues.lng);
+        let marker = new kakao.maps.Marker({
+            position : markerPosition
+        });
+        marker.setMap(map);
+        stationMarkers.push(marker);
+    });
+}
 
-// $('#curPos').click(function(){
-//     navigator.geolocation.getCurrentPosition ((pos) => {
-//         console.log('sucess');
-//     }, (error) => {
-//         console.log(error.message);
-//         curLatitude = pos.coords.latitude;
-//         curLongitude = pos.coords.longitude;
-//     });
-//     let moveLatLon = new kakao.maps.LatLng(curLatitude, curLongitude);
-//     map.panTo(moveLatLon);
-//     console.log('latitude : ' + curLatitude + ' , longitutde : ' + curLongitude);
-// })
+//마커의 가시성 설정
+function setVisibleMarker(visibility) {
+    let tempMap = (visibility ? map : null);
+    stationMarkers.forEach((marker) => {
+        marker.setMap(tempMap);
+    })
+}
