@@ -32,11 +32,4 @@ router.get('/', function(req, res, next) {
   });
 });
 
-router.get('/map', isLoggedIn, (req, res, next) => {
-  res.render('map', {
-    user : req.user,
-    appKey : process.env.KAKAO_MAP
-  });
-})
-
 module.exports = router;
