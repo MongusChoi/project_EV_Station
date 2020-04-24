@@ -10,6 +10,7 @@ require('dotenv').config();
 
 const indexRouter = require('./routes/index');
 const usersRouter = require('./routes/users');
+const mapRouter = require('./routes/map');
 const sequelize = require('./models').sequelize;
 const authRouter = require('./routes/auth');
 const passportConfig = require('./passport');
@@ -46,6 +47,7 @@ app.use(passport.session());
 app.use('/', indexRouter);
 app.use('/auth', authRouter);
 app.use('/users', usersRouter);
+app.use('/map', mapRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
@@ -59,7 +61,7 @@ app.use(function(err, req, res, next) {
   res.locals.error = req.app.get('env') === 'test' ? err : {}; 
 
   // render the error page
-  res.status(err.status || 500);
+  res.status(err.status || 500); 
   res.render('error', {
     errorCode:err.status,
     errorMessage:err.message,
