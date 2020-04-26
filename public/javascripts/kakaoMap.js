@@ -22,13 +22,14 @@ map.addControl(zoomControl, kakao.maps.ControlPosition.RIGHT);
 
 // custom controll
 function setCurLocation() {
-    navigator.geolocation.getCurrentPosition ((pos) => {
-        console.log('sucess');
-    }, (error) => {
-        console.log(error.message);
-        curLatitude = pos.coords.latitude;
-        curLongitude = pos.coords.longitude;
-    });
+    if(navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition ((pos) => {
+            curLatitude = pos.coords.latitude;
+            curLongitude = pos.coords.longitude;
+        });
+    } else {
+        console.log('geolocation 사용 불가');
+    }
     // 현재 좌표 객체 생성
     let curPosition = new kakao.maps.LatLng(curLatitude, curLongitude);
     setCurMarker(curPosition);
