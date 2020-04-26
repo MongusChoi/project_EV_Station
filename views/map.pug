@@ -1,6 +1,7 @@
 extends layout
 
 block content
+    script(type='text/javascript' src=appKey)
     //custom css
     link(href='/stylesheets/mapstyle.css' rel='stylesheet')
     .col-lg-12.text-center
@@ -8,6 +9,5 @@ block content
         .custom_typecontrol
             span#btnRoadmap.selected_btn(onclick="setCurLocation()") 현재위치
         //input(id='curPos' type='button' value='현재위치')
-        script(type='text/javascript' src=appKey)
-        script(src='/vendor2/jquery/jquery.min.js')
         script(src='/javascripts/kakaoMap.js')
+        script(src='/vendor2/jquery/jquery.min.js')
