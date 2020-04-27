@@ -59,12 +59,33 @@ function setCurMarker(position) {
 // station 마커 최초 생성
 function initStationMarkers(){
     stationArr.forEach((item) => {
+        // 마커의 좌표객체 생성
         let markerPosition = new kakao.maps.LatLng(item.lat, item.lng);
+        // 마커 객체 생성
         let marker = new kakao.maps.Marker({
-            position : markerPosition
+            position : markerPosition,
+            clickable : true            // 마커의 클릭 이벤트 설정
         });
         marker.setMap(map);
-        stationMarkers.push(marker);
+        stationMarkers.push(marker);       // 마커를 컨트롤 할 수 있는 배열에 객체 삽입
+        // 인포 윈도우 컨텐츠
+        let iwContent = `
+        <div style="padding:5px;">
+            충전소 이름 : ${item.statNm}<br>
+            충전소 주소 : ${item.statAddr}<br>
+            충전기 타입 : ${item.chargerType}<br>
+            운영 시간 : ${item.useTime}<br>
+        </div>
+        `;
+        // 인포 윈도우 객체 생성
+        let infoWindow = new kakao.maps.InfoWindow({
+            content : iwContent,
+            removable : true        // x로 인포 윈도우를 닫을 수 있는지?
+        });
+        // 마커의 클릭 이벤트 추가
+        kakao.maps.event.addListener(marker, 'click', () => {
+            infoWindow.open(map, marker);
+        });
     });
 }
 
