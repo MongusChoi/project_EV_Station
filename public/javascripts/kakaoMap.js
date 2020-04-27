@@ -3,22 +3,22 @@ let curLongitude = 126.978179;
 let currentMarker = null;
 let stationMarkers = [];
 
-var container = document.getElementById('map');
-var options = {
+let container = document.getElementById('map');
+let options = {
     center: new kakao.maps.LatLng(curLatitude, curLongitude),
     level: 3
 };
-
-var map = new kakao.maps.Map(container, options);
+let stationArr = data;
+let map = new kakao.maps.Map(container, options);
 
 // 지도 확대 축소를 제어할 수 있는  줌 컨트롤을 생성
-var zoomControl = new kakao.maps.ZoomControl();
+let zoomControl = new kakao.maps.ZoomControl();
 map.addControl(zoomControl, kakao.maps.ControlPosition.RIGHT);
 
-// // 충전소 마커 최초 생성
-// if(stationMarkers.length === 0) {
-//     initStationMarkers();
-// }
+// 충전소 마커 최초 생성
+if(stationMarkers.length === 0) {
+    initStationMarkers();
+}
 
 // custom controll
 function setCurLocation() {
@@ -58,8 +58,8 @@ function setCurMarker(position) {
 
 // station 마커 최초 생성
 function initStationMarkers(){
-    mapArr.forEach((item) => {
-        let markerPosition = new kakao.maps.LatLng(item.dataValues.lat, item.dataValues.lng);
+    stationArr.forEach((item) => {
+        let markerPosition = new kakao.maps.LatLng(item.lat, item.lng);
         let marker = new kakao.maps.Marker({
             position : markerPosition
         });

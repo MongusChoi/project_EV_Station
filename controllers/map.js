@@ -7,7 +7,6 @@ const mapInit = (async(req, res, next) => {
         appKey : process.env.KAKAO_MAP,
         mapArr : stationData
     });
-    //console.log(stationData[0].dataValues.statNm);
 });
 
 module.exports = {
