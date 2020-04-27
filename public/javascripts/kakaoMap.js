@@ -37,11 +37,6 @@ function setCurLocation() {
 }
 
 function setCurMarker(position) {
-    let imageSrc = 'image/marker.png',  // 마커 이미지 경로
-        imageSize = new kakao.maps.Size(32, 34),    // 마커 이미지 사이즈
-        imageOption = {offset: new kakao.maps.Point(27, 69)};   // 마커 이미지 옵션, 이미지 안에서의 좌표 설정
-    let markerImage = new kakao.maps.MarkerImage(imageSrc, imageSize, imageOption); // 마커의 이미지정보를 가지고 있는 마커이미지를 생성
-
     // 현재 표시된 마커가 있을 땐 마커를 지도에서 지우고 마커 객체를 비움
     if(currentMarker !== null) {
         currentMarker.setMap(null);
@@ -49,8 +44,7 @@ function setCurMarker(position) {
     }
     // 마커 생성
     currentMarker = new kakao.maps.Marker({
-        position: position, 
-        image: markerImage // 마커이미지 설정 
+        position: position
         });
     // 마커를 지도에 표시
     currentMarker.setMap(map);
@@ -61,13 +55,17 @@ function initStationMarkers(){
     stationArr.forEach((item) => {
         // 마커의 좌표객체 생성
         let markerPosition = new kakao.maps.LatLng(item.lat, item.lng);
+        let imageSrc = 'https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/markerStar.png',
+            imageSize = new kakao.maps.Size(24, 35);
+        let markerImage = new kakao.maps.MarkerImage(imageSrc, imageSize);
         // 마커 객체 생성
         let marker = new kakao.maps.Marker({
             position : markerPosition,
-            clickable : true            // 마커의 클릭 이벤트 설정
+            clickable : true,                // 마커의 클릭 이벤트 설정
+            image : markerImage
         });
         marker.setMap(map);
-        stationMarkers.push(marker);       // 마커를 컨트롤 할 수 있는 배열에 객체 삽입
+        stationMarkers.push(marker);         // 마커를 컨트롤 할 수 있는 배열에 객체 삽입
         // 인포 윈도우 컨텐츠
         let iwContent = `
         <div style="padding:5px;">
