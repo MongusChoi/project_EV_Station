@@ -15,6 +15,8 @@ module.exports = (sequelize, DataTypes) => {
                 충전기 타입
                 01 : DC차데모
                 03 : DC차데모 + AC3상
+                04 : DC콤보
+                05 : 06과 같음...왜...?
                 06 : DC차데모 + AC3상 + DC콤보
             */
             type : DataTypes.STRING(4),

@@ -59,6 +59,26 @@ function initStationMarkers(){
         let imageSrc = 'https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/markerStar.png',
             imageSize = new kakao.maps.Size(24, 35);
         let markerImage = new kakao.maps.MarkerImage(imageSrc, imageSize);
+        let textChargerType;
+        switch(item.chargerType) {
+            case '01':
+                textChargerType = 'DC 차데모';
+                break;
+            case '03':
+                textChargerType = 'DC 차데모 + AC3상';
+                break;
+            case '04':
+                textChargerType = 'DC 콤보';
+                break;
+            case '05':
+            case '06':
+                textChargerType = 'DC 차데모 + AC3상 + DC 콤보';
+                break;
+            default:
+                textChargerType = '정보 없음';
+                console.log('이름 : ' + item.statNm + ' 타입 : ' + item.chargerType);
+                break;
+        }
         // 마커 객체 생성
         let marker = new kakao.maps.Marker({
             position : markerPosition,
@@ -94,7 +114,7 @@ function initStationMarkers(){
         <div class="body">
             <div class="desc">
                 <div class="ellipsis">${item.statAddr}</div>
-                <div class="ellipsis">${item.chargerType}</div>
+                <div class="ellipsis">${textChargerType}</div>
                 <div class="jibun ellipsis">${item.useTime}</div>
             </div>
         </div>
