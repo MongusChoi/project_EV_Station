@@ -29,6 +29,7 @@ const insert = (async () => {
             else { tempUseTime = item.useTime[0]; }
             station.create({
                 statNm : item.statNm[0],
+                statID : item.statId[0],
                 statAddr : item.addrDoro[0],
                 chargerType : item.chgerType[0],
                 useTime : tempUseTime,

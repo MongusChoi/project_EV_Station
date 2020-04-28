@@ -5,6 +5,11 @@ module.exports = (sequelize, DataTypes) => {
             type : DataTypes.STRING(100),
             allowNull : false
         },
+        statID : {
+            // 충전소 id
+            type : DataTypes.STRING(20),
+            allowNull : false
+        },
         statAddr : {
             // 충전소 주소
             type : DataTypes.STRING(150),
@@ -28,11 +33,13 @@ module.exports = (sequelize, DataTypes) => {
         },
         lat : {
             // 충전기 위도
-            type : DataTypes.FLOAT
+            type : DataTypes.FLOAT,
+            allowNull : false
         },
         lng : {
             // 충전기 경도
-            type : DataTypes.FLOAT
+            type : DataTypes.FLOAT,
+            allowNull : false
         }
     }, {
         timestamps : false,
