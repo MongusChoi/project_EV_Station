@@ -2,6 +2,7 @@ let curLatitude = 37.5665734;
 let curLongitude = 126.978179;
 let currentMarker = null;
 let stationMarkers = [];
+let stationOverlays = [];
 
 let container = document.getElementById('map');
 let options = {
@@ -20,7 +21,7 @@ if(stationMarkers.length === 0) {
     initStationMarkers();
 }
 
-// custom controll
+// 지도의 커스텀 컨트롤 클릭 이벤트
 function setCurLocation() {
     if(navigator.geolocation) {
         navigator.geolocation.getCurrentPosition ((pos) => {
@@ -52,7 +53,7 @@ function setCurMarker(position) {
 
 // station 마커 최초 생성
 function initStationMarkers(){
-    stationArr.forEach((item) => {
+    stationArr.forEach((item, index) => {
         // 마커의 좌표객체 생성
         let markerPosition = new kakao.maps.LatLng(item.lat, item.lng);
         let imageSrc = 'https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/markerStar.png',
@@ -66,24 +67,53 @@ function initStationMarkers(){
         });
         marker.setMap(map);
         stationMarkers.push(marker);         // 마커를 컨트롤 할 수 있는 배열에 객체 삽입
-        // 인포 윈도우 컨텐츠
-        let iwContent = `
-        <div style="padding:5px;">
-            충전소 이름 : ${item.statNm}<br>
-            충전소 주소 : ${item.statAddr}<br>
-            충전기 타입 : ${item.chargerType}<br>
-            운영 시간 : ${item.useTime}<br>
+        // 커스텀 오버레이의 컨텐츠
+        let content = `
+<style>
+.wrap {position: absolute;left: 0;bottom: 40px;width: 288px;height: 132px;margin-left: -144px;text-align: left;overflow: hidden;font-size: 12px;font-family: 'Malgun Gothic', dotum, '돋움', sans-serif;line-height: 1.5;}
+.wrap * {padding: 0;margin: 0;}
+.wrap .info {width: 286px;height: 120px;border-radius: 5px;border-bottom: 2px solid #ccc;border-right: 1px solid #ccc;overflow: hidden;background: #fff;}
+.wrap .info:nth-child(1) {border: 0;box-shadow: 0px 1px 2px #888;}
+.info .title {padding: 5px 0 0 10px;height: 30px;background: #eee;border-bottom: 1px solid #ddd;font-size: 18px;font-weight: bold;}
+.info .close {position: absolute;top: 10px;right: 10px;color: #888;width: 17px;height: 17px;background: url('https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/overlay_close.png');}
+.info .close:hover {cursor: pointer;}
+.info .body {position: relative;overflow: hidden;}
+.info .desc {position: relative;margin: 13px 0 0 90px;height: 75px;}
+.desc .ellipsis {overflow: hidden;text-overflow: ellipsis;white-space: nowrap;}
+.desc .jibun {font-size: 11px;color: #888;margin-top: -2px;}
+.info .img {position: absolute;top: 6px;left: 5px;width: 73px;height: 71px;border: 1px solid #ddd;color: #888;overflow: hidden;}
+.info:after {content: '';position: absolute;margin-left: -12px;left: 50%;bottom: 0;width: 22px;height: 12px;background: url('https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/vertex_white.png')}
+.info .link {color: #5085BB;}
+</style>
+<div class="wrap">
+    <div class="info">
+        <div class="title">
+            ${item.statNm}
+            <div class="close" onclick="closeOverlay(${index})" title="닫기"></div>
         </div>
+        <div class="body">
+            <div class="desc">
+                <div class="ellipsis">${item.statAddr}</div>
+                <div class="ellipsis">${item.chargerType}</div>
+                <div class="jibun ellipsis">${item.useTime}</div>
+            </div>
+        </div>
+    </div>
+</div>
         `;
-        // 인포 윈도우 객체 생성
-        let infoWindow = new kakao.maps.InfoWindow({
-            content : iwContent,
-            removable : true        // x로 인포 윈도우를 닫을 수 있는지?
+        // 커스텀 오버레이 생성
+        let overlay = new kakao.maps.CustomOverlay({
+            content : content,
+            map : map,
+            position : marker.getPosition()
         });
+        stationOverlays.push(overlay);
         // 마커의 클릭 이벤트 추가
         kakao.maps.event.addListener(marker, 'click', () => {
-            infoWindow.open(map, marker);
+            overlay.setMap(map);
+            map.panTo(marker.getPosition());        // 마커 클릭 시 클릭한 위치를 중심으로 지도 이동
         });
+        overlay.setMap(null);       // 오버레이의 기본설정은 나오지 않게 설정
     });
 }
 
@@ -93,4 +123,9 @@ function setVisibleMarker(visibility) {
     stationMarkers.forEach((marker) => {
         marker.setMap(tempMap);
     })
+}
+
+// 커스텀 오버레이 가시성 설정
+function closeOverlay(overlayIndex) {
+    stationOverlays[overlayIndex].setMap(null);
 }
