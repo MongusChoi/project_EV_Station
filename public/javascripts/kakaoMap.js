@@ -1,7 +1,9 @@
 let curLatitude = 37.5665734;
 let curLongitude = 126.978179;
 let currentMarker = null;
-let stationMarkers = [];
+let dcChademos = [];
+let dcCombos = [];
+let ac3s = [];
 let stationOverlays = [];
 
 let container = document.getElementById('map');
@@ -17,7 +19,7 @@ let zoomControl = new kakao.maps.ZoomControl();
 map.addControl(zoomControl, kakao.maps.ControlPosition.RIGHT);
 
 // 충전소 마커 최초 생성
-if(stationMarkers.length === 0) {
+if(dcChademos.length === 0 && dcCombos.length === 0 && ac3s.length === 0) {
     initStationMarkers();
 }
 
@@ -60,25 +62,6 @@ function initStationMarkers(){
             imageSize = new kakao.maps.Size(24, 35);
         let markerImage = new kakao.maps.MarkerImage(imageSrc, imageSize);
         let textChargerType;
-        switch(item.chargerType) {
-            case '01':
-                textChargerType = 'DC 차데모';
-                break;
-            case '03':
-                textChargerType = 'DC 차데모 + AC3상';
-                break;
-            case '04':
-                textChargerType = 'DC 콤보';
-                break;
-            case '05':
-            case '06':
-                textChargerType = 'DC 차데모 + AC3상 + DC 콤보';
-                break;
-            default:
-                textChargerType = '정보 없음';
-                console.log('이름 : ' + item.statNm + ' 타입 : ' + item.chargerType);
-                break;
-        }
         // 마커 객체 생성
         let marker = new kakao.maps.Marker({
             position : markerPosition,
@@ -86,7 +69,33 @@ function initStationMarkers(){
             image : markerImage
         });
         marker.setMap(map);
-        stationMarkers.push(marker);         // 마커를 컨트롤 할 수 있는 배열에 객체 삽입
+        // 충전기 커넥터 타입에 따른 네이밍 분류 및 배열 추가
+        switch(item.chargerType) {
+            case '01':
+                textChargerType = 'DC 차데모';
+                dcChademos.push(marker);
+                break;
+            case '03':
+                textChargerType = 'DC 차데모 + AC3상';
+                dcChademos.push(marker);
+                ac3s.push(marker);
+                break;
+            case '04':
+                textChargerType = 'DC 콤보';
+                dcCombos.push(marker);
+                break;
+            case '05':
+            case '06':
+                textChargerType = 'DC 차데모 + AC3상 + DC 콤보';
+                dcChademos.push(marker);
+                ac3s.push(marker);
+                dcCombos.push(marker);
+                break;
+            default:
+                textChargerType = '정보 없음';
+                console.log('이름 : ' + item.statNm + ' 타입 : ' + item.chargerType);
+                break;
+        }
         // 커스텀 오버레이의 컨텐츠
         let content = `
 <style>
@@ -116,6 +125,7 @@ function initStationMarkers(){
                 <div class="ellipsis">${item.statAddr}</div>
                 <div class="ellipsis">${textChargerType}</div>
                 <div class="jibun ellipsis">${item.useTime}</div>
+                <div><a href="/Map/detail?id=${item.statID}"> 더 보기</a></div>
             </div>
         </div>
     </div>
@@ -137,13 +147,13 @@ function initStationMarkers(){
     });
 }
 
-//마커의 가시성 설정
-function setVisibleMarker(visibility) {
-    let tempMap = (visibility ? map : null);
-    stationMarkers.forEach((marker) => {
-        marker.setMap(tempMap);
-    })
-}
+// //마커의 가시성 설정
+// function setVisibleMarker(visibility) {
+//     let tempMap = (visibility ? map : null);
+//     stationMarkers.forEach((marker) => {
+//         marker.setMap(tempMap);
+//     })
+// }
 
 // 커스텀 오버레이 가시성 설정
 function closeOverlay(overlayIndex) {
