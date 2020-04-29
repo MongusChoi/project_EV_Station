@@ -1,3 +1,4 @@
+const url = require('url');
 const { station, userInfo } = require('../models');
 
 const mapInit = (async(req, res, next) => {
@@ -9,6 +10,12 @@ const mapInit = (async(req, res, next) => {
     });
 });
 
+const detail = async (req, res) => {
+    let queryData = url.parse(req.url, true).query;
+    console.log(queryData);
+}
+
 module.exports = {
-    mapInit
+    mapInit,
+    detail
 }
