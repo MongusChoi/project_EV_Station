@@ -1,0 +1,8 @@
+extends layout
+
+block content
+    stationDataArray[0].statNm[0]
+    script.
+        let data = !{JSON.stringify(stationDataArray)};
+    script(src='/javascripts/detail.js')
+    script(src='/vendor2/jquery/jquery.min.js')
