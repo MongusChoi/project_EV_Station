@@ -1,26 +1,84 @@
-let curLatitude = 37.5665734;
-let curLongitude = 126.978179;
+let curLatitude;// = 37.5665734;
+let curLongitude;// = 126.978179;
 let currentMarker = null;
 let dcChademos = [];
 let dcCombos = [];
 let ac3s = [];
 let stationOverlays = [];
+let map, zoomControl;
 
-let container = document.getElementById('map');
-let options = {
-    center: new kakao.maps.LatLng(curLatitude, curLongitude),
-    level: 3
-};
-let stationArr = data;
-let map = new kakao.maps.Map(container, options);
+initMap();
 
-// 지도 확대 축소를 제어할 수 있는  줌 컨트롤을 생성
-let zoomControl = new kakao.maps.ZoomControl();
-map.addControl(zoomControl, kakao.maps.ControlPosition.RIGHT);
+// if(navigator.geolocation) {
+//     navigator.geolocation.getCurrentPosition ((pos) => {
+//         curLatitude = pos.coords.latitude;
+//         curLongitude = pos.coords.longitude;
+//     });
+// } else {
+//     console.log('geolocation 사용 불가');
+// }
 
-// 충전소 마커 최초 생성
-if(dcChademos.length === 0 && dcCombos.length === 0 && ac3s.length === 0) {
-    initStationMarkers();
+// let container = document.getElementById('map');
+// let options = {
+//     center: new kakao.maps.LatLng(curLatitude, curLongitude),
+//     level: 3
+// };
+// let stationArr = data;
+// let map = new kakao.maps.Map(container, options);
+
+// // 지도 확대 축소를 제어할 수 있는  줌 컨트롤을 생성
+// let zoomControl = new kakao.maps.ZoomControl();
+// map.addControl(zoomControl, kakao.maps.ControlPosition.RIGHT);
+
+// // 충전소 마커 최초 생성
+// if(dcChademos.length === 0 && dcCombos.length === 0 && ac3s.length === 0) {
+//     initStationMarkers();
+// }
+
+async function initMap() {
+    let position = await getLocation();
+    let container = document.getElementById('map');
+    let options = {
+        center: position,
+        level: 3
+    };
+    //let stationArr = await data;
+    map = new kakao.maps.Map(container, options);
+
+    // 지도 확대 축소를 제어할 수 있는  줌 컨트롤을 생성
+    zoomControl = new kakao.maps.ZoomControl();
+    map.addControl(zoomControl, kakao.maps.ControlPosition.RIGHT);
+    setCurMarker(position);
+}
+
+function getLocation(){
+    return new Promise(async (resolve, reject) => {
+        try{
+            await initGeoLocation();
+            return resolve(new kakao.maps.LatLng(curLatitude, curLongitude));
+        } catch(err) {
+            return reject(err);
+        }
+    })
+}
+
+function initGeoLocation(){
+    return new Promise((resolve, reject) => {
+        try{
+            if(navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition ((pos) => {
+                    console.log(pos);
+                    curLatitude = pos.coords.latitude;
+                    curLongitude = pos.coords.longitude;
+                    return resolve();
+                });
+            } else {
+                return reject(console.log('geolocation 사용불가'));
+            }
+        } catch(err) {
+            return reject(err);
+        }
+    });
 }
 
 // 지도의 커스텀 컨트롤 클릭 이벤트
@@ -140,6 +198,7 @@ function initStationMarkers(){
         stationOverlays.push(overlay);
         // 마커의 클릭 이벤트 추가
         kakao.maps.event.addListener(marker, 'click', () => {
+            history.pushState({}, '', `?id=${item.statID}`);
             overlay.setMap(map);
             map.panTo(marker.getPosition());        // 마커 클릭 시 클릭한 위치를 중심으로 지도 이동
         });
