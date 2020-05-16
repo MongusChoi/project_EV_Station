@@ -6,5 +6,6 @@ const { isLoggedIn, isNotLoggedIn } = require('./middlewares');
 
 router.get('/', isLoggedIn, mapController.mapInit);
 router.get('/detail', isLoggedIn, mapController.detail);
+router.get('/getMarker', isLoggedIn, mapController.getMarker);
 
 module.exports = router;

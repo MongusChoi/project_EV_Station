@@ -7,7 +7,7 @@ let ac3s = [];
 let stationOverlays = [];
 let map, zoomControl;
 
-initMap();
+initMap(data);
 
 // if(navigator.geolocation) {
 //     navigator.geolocation.getCurrentPosition ((pos) => {
@@ -35,20 +35,25 @@ initMap();
 //     initStationMarkers();
 // }
 
-async function initMap() {
-    let position = await getLocation();
-    let container = document.getElementById('map');
-    let options = {
-        center: position,
-        level: 3
-    };
-    //let stationArr = await data;
-    map = new kakao.maps.Map(container, options);
-
-    // 지도 확대 축소를 제어할 수 있는  줌 컨트롤을 생성
-    zoomControl = new kakao.maps.ZoomControl();
-    map.addControl(zoomControl, kakao.maps.ControlPosition.RIGHT);
-    setCurMarker(position);
+async function initMap(data) {
+    if(data.length === 0) {
+        await getLocation();
+        location.href = `/map/getMarker?lat=${curLatitude}&lng=${curLongitude}`;
+    } else {
+        let position = await getLocation();
+        let container = document.getElementById('map');
+        let options = {
+            center: position,
+            level: 3
+        };
+        //let stationArr = await data;
+        map = new kakao.maps.Map(container, options);
+    
+        // 지도 확대 축소를 제어할 수 있는  줌 컨트롤을 생성
+        zoomControl = new kakao.maps.ZoomControl();
+        map.addControl(zoomControl, kakao.maps.ControlPosition.RIGHT);
+        setCurMarker(position);
+    }
 }
 
 function getLocation(){
@@ -67,7 +72,6 @@ function initGeoLocation(){
         try{
             if(navigator.geolocation) {
                 navigator.geolocation.getCurrentPosition ((pos) => {
-                    console.log(pos);
                     curLatitude = pos.coords.latitude;
                     curLongitude = pos.coords.longitude;
                     return resolve();
