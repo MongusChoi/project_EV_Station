@@ -21,8 +21,9 @@ const detail = async (req, res) => {
     let dataArr = [];
     parseString(apiData.body, (err, result) => {
         if(err) { throw err; }
-        dataArr = result.response.body[0].items[0].item;
-        dataArr = dataArr.filter(item => item.statId[0] === stationId.id);
+        console.log(result);
+        // dataArr = result.response.body[0].items[0].item;
+        // dataArr = dataArr.filter(item => item.statId[0] === stationId.id);
     });
 
     res.render('detail', {
@@ -30,24 +31,28 @@ const detail = async (req, res) => {
     });
 }
 
-const test = async(req, res, next) => {
-    // const curLat = await parseQueryStringSync(req);
-    // const curLng = await parseQueryStringSync(req);
-    // console.log(`lat : ${curLat.lat}, lng : ${curLng.lng}`);
-    console.log(req);
-    // const dataArray = await findMarkerPosition(Number(curLat.lat), Number(curLng.lng));
-    // res.send(302, dataArray);
+const getStationPosition = async(req, res, next) => {
+    const { statID } = req.body;
+    try{
+        const stationData = await station.findOne({ where : { statID } });
+        return res.send({stationData});
+    } catch(error) {
+        console.error(error);
+    }
 }
 
 // 클라이언트에서 받은 현재 위치를 기반으로 주변에 있는 충전소 정보를 전송하는 함수
 const setMarker = async(req, res) => {
-    console.log(req.body);
-    // const curLat = await parseQueryStringSync(req);
-    // const curLng = await parseQueryStringSync(req);
-    // const dataArray = await findMarkerPosition(Number(curLat.lat), Number(curLng.lng));
-    // res.send('map', {
-    //     mapArr : dataArray
-    // });
+    const { lat, lng } = req.body;
+    try{
+        const dataArray = await findMarkerPosition(Number(lat), Number(lng));
+        res.send({
+            mapArr : dataArray
+        });
+    }
+    catch(error){
+        console.error(error);
+    }
 }
 
 // 쿼리스트링 파싱하는 함수
@@ -67,7 +72,7 @@ function findMarkerPosition(curLat, curLng) {
         try {
             const result = await station.findAll({
             where : {
-                [Op.or] : [{
+                [Op.and] : [{
                     lat : {
                         [Op.gte] : curLat - 0.003260869565217,
                         [Op.lte] : curLat + 0.003260869565217
@@ -91,5 +96,5 @@ module.exports = {
     mapInit,
     detail,
     setMarker,
-    test
+    getStationPosition
 }
