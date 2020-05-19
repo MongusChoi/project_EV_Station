@@ -7,6 +7,6 @@ const { isLoggedIn, isNotLoggedIn } = require('./middlewares');
 router.get('/', isLoggedIn, mapController.mapInit);
 router.get('/detail', isLoggedIn, mapController.detail);
 router.post('/setMarker', isLoggedIn, mapController.setMarker);
-router.post('/test', isLoggedIn, mapController.test);
+router.post('/getStationPosition', isLoggedIn, mapController.getStationPosition);
 
 module.exports = router;
