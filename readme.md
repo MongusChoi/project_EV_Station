@@ -16,7 +16,6 @@ project ev station은 외부 데이터를 크롤링 하여 전국의 전기차 �
     - express-session
     - express generator
     - bcryptjs
-    - mysql2
     - passport
         - passport-kakao
         - passport-local
@@ -25,7 +24,7 @@ project ev station은 외부 데이터를 크롤링 하여 전국의 전기차 �
     - lodash
     - pug
 - AWS-ec2
-- 가비아 도네임 서비스
+- 가비아 도메인 서비스
 - Kakao Map API
 - nginx
 - https(letsencrypt 인증)
