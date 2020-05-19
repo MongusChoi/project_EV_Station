@@ -11,8 +11,8 @@ loadJQuery();
 initMap(data);
 
 // if(navigator.geolocation) {
-    //     navigator.geolocation.getCurrentPosition ((pos) => {
-        //         curLatitude = pos.coords.latitude;
+//     navigator.geolocation.getCurrentPosition ((pos) => {
+//         curLatitude = pos.coords.latitude;
 //         curLongitude = pos.coords.longitude;
 //     });
 // } else {
@@ -37,71 +37,99 @@ initMap(data);
 // }
 
 async function initMap(data) {
-    if(data.length === 0) {
-        await getLocation();
-        const body = await setData();
-        fetch('/map/setMarker', {
-            method : 'POST',
-            body : JSON.stringify(body)
-        }).then(res => res.json())
-        .then(response => console.log('success : ', JSON.stringify(response)))
-        .catch(err => console.error(err))
-    } else {
-        let position = await getLocation();
-        let container = document.getElementById('map');
-        let options = {
-            center: position,
-            level: 3
-        };
-        //let stationArr = await data;
-        map = new kakao.maps.Map(container, options);
-    
-        // 지도 확대 축소를 제어할 수 있는  줌 컨트롤을 생성
-        zoomControl = new kakao.maps.ZoomControl();
-        map.addControl(zoomControl, kakao.maps.ControlPosition.RIGHT);
-        // 중심좌표나 확대 수준이 변경되면 나타나는 이벤트
-        kakao.maps.event.addListener(map, 'idle', async() => {
-            const url = '/map/test';
-            const body = await setData();
-
-            console.log(body);
-
-            await fetch(url, {
-                method : 'POST',
-                body
-            }).then(res => res.json())
-            .then(response => console.log('success : ', JSON.stringify(response)))
-            .catch(err => console.error(err))
-        });
-        setCurMarker(position);
+    const statData = {
+        statID : window.location.href.split('=')[1]
     }
+    let centerPosition;
+    if(statData.statID === undefined)
+        centerPosition = await getLocation();         // 지도가 처음 로드 될 때 현재 위치로 설정
+    else{
+        await fetch('/map/getStationPosition', {
+            method : 'POST',
+            body : JSON.stringify(statData),
+            headers : {
+                'Content-Type' : 'application/json'
+            }
+        }).then(res => res.json())
+        .then(response => {
+            let lat = response.stationData.lat;
+            let lng = response.stationData.lng;
+            centerPosition = new kakao.maps.LatLng(lat, lng);
+        })
+        .catch(error => console.error(error));
+    }
+    let body = await setData(centerPosition.Ha, centerPosition.Ga);
+    await fetch('/map/setMarker', {
+        method: 'POST',
+        body: JSON.stringify(body),
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    }).then(res => res.json())
+        .then(response => {
+            console.log('find marker : ', response.mapArr);
+            insertStationMarker(response.mapArr);
+        })
+        .catch(err => console.error(err))
+        
+    let container = document.getElementById('map');
+    let options = {
+        center: centerPosition,
+        level: 3
+    };
+    map = new kakao.maps.Map(container, options);
+
+    // 지도 확대 축소를 제어할 수 있는  줌 컨트롤을 생성
+    zoomControl = new kakao.maps.ZoomControl();
+    map.addControl(zoomControl, kakao.maps.ControlPosition.RIGHT);
+    // 중심좌표나 확대 수준이 변경되면 나타나는 이벤트
+    kakao.maps.event.addListener(map, 'idle', async () => {
+        const url = '/map/setMarker';
+        console.log(map.getCenter());
+        body = await setData(map.getCenter().Ha, map.getCenter().Ga);
+        await fetch(url, {
+            method: 'POST',
+            body: JSON.stringify(body),
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        }).then(res => res.json())
+            .then(response => {
+                console.log('success : ', JSON.stringify(response));
+                insertStationMarker(response.mapArr);
+            })
+            .catch(err => console.error(err));
+
+    });
+    const curPosition = await getLocation();
+    setCurMarker(curPosition);
 }
 
-function setData() {
-    return new Promise(async(resolve, reject) => {
+function setData(lat, lng) {
+    return new Promise(async (resolve, reject) => {
         return resolve({
-            lat : curLatitude,
-            lng : curLongitude
+            lat: lat,
+            lng: lng
         })
     })
 }
 
-function getLocation(){
+function getLocation() {
     return new Promise(async (resolve, reject) => {
-        try{
+        try {
             await initGeoLocation();
             return resolve(new kakao.maps.LatLng(curLatitude, curLongitude));
-        } catch(err) {
+        } catch (err) {
             return reject(err);
         }
     })
 }
 
-function initGeoLocation(){
+function initGeoLocation() {
     return new Promise((resolve, reject) => {
-        try{
-            if(navigator.geolocation) {
-                navigator.geolocation.getCurrentPosition ((pos) => {
+        try {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition((pos) => {
                     curLatitude = pos.coords.latitude;
                     curLongitude = pos.coords.longitude;
                     return resolve();
@@ -109,7 +137,7 @@ function initGeoLocation(){
             } else {
                 return reject(console.log('geolocation 사용불가'));
             }
-        } catch(err) {
+        } catch (err) {
             return reject(err);
         }
     });
@@ -117,8 +145,8 @@ function initGeoLocation(){
 
 // 지도의 커스텀 컨트롤 클릭 이벤트
 function setCurLocation() {
-    if(navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition ((pos) => {
+    if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition((pos) => {
             curLatitude = pos.coords.latitude;
             curLongitude = pos.coords.longitude;
         });
@@ -133,21 +161,21 @@ function setCurLocation() {
 
 function setCurMarker(position) {
     // 현재 표시된 마커가 있을 땐 마커를 지도에서 지우고 마커 객체를 비움
-    if(currentMarker !== null) {
+    if (currentMarker !== null) {
         currentMarker.setMap(null);
         currentMarker = null;
     }
     // 마커 생성
     currentMarker = new kakao.maps.Marker({
         position: position
-        });
+    });
     // 마커를 지도에 표시
     currentMarker.setMap(map);
 }
 
-// station 마커 최초 생성
-function initStationMarkers(){
-    stationArr.forEach((item, index) => {
+// station 마커 생성
+function insertStationMarker(dataArr) {
+    dataArr.forEach((item, index) => {
         // 마커의 좌표객체 생성
         let markerPosition = new kakao.maps.LatLng(item.lat, item.lng);
         let imageSrc = 'https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/markerStar.png',
@@ -156,13 +184,13 @@ function initStationMarkers(){
         let textChargerType;
         // 마커 객체 생성
         let marker = new kakao.maps.Marker({
-            position : markerPosition,
-            clickable : true,                // 마커의 클릭 이벤트 설정
-            image : markerImage
+            position: markerPosition,
+            clickable: true,                // 마커의 클릭 이벤트 설정
+            image: markerImage
         });
         marker.setMap(map);
         // 충전기 커넥터 타입에 따른 네이밍 분류 및 배열 추가
-        switch(item.chargerType) {
+        switch (item.chargerType) {
             case '01':
                 textChargerType = 'DC 차데모';
                 dcChademos.push(marker);
@@ -225,9 +253,9 @@ function initStationMarkers(){
         `;
         // 커스텀 오버레이 생성
         let overlay = new kakao.maps.CustomOverlay({
-            content : content,
-            map : map,
-            position : marker.getPosition()
+            content: content,
+            map: map,
+            position: marker.getPosition()
         });
         stationOverlays.push(overlay);
         // 마커의 클릭 이벤트 추가
@@ -240,23 +268,16 @@ function initStationMarkers(){
     });
 }
 
-// //마커의 가시성 설정
-// function setVisibleMarker(visibility) {
-//     let tempMap = (visibility ? map : null);
-//     stationMarkers.forEach((marker) => {
-//         marker.setMap(tempMap);
-//     })
-// }
-
 // 커스텀 오버레이 가시성 설정
 function closeOverlay(overlayIndex) {
     stationOverlays[overlayIndex].setMap(null);
 }
 
+// JQuery load
 function loadJQuery() {
     var oScript = document.createElement("script");
     oScript.type = "text/javascript";
-    oScript.charset = "utf-8";		  
-    oScript.src = "http://code.jquery.com/jquery-1.6.2.min.js";	
+    oScript.charset = "utf-8";
+    oScript.src = "http://code.jquery.com/jquery-1.6.2.min.js";
     document.getElementsByTagName("head")[0].appendChild(oScript);
 }
