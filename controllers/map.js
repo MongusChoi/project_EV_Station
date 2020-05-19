@@ -30,16 +30,24 @@ const detail = async (req, res) => {
     });
 }
 
+const test = async(req, res, next) => {
+    // const curLat = await parseQueryStringSync(req);
+    // const curLng = await parseQueryStringSync(req);
+    // console.log(`lat : ${curLat.lat}, lng : ${curLng.lng}`);
+    console.log(req);
+    // const dataArray = await findMarkerPosition(Number(curLat.lat), Number(curLng.lng));
+    // res.send(302, dataArray);
+}
+
 // 클라이언트에서 받은 현재 위치를 기반으로 주변에 있는 충전소 정보를 전송하는 함수
-const getMarker = async(req, res) => {
-    const curLat = await parseQueryStringSync(req);
-    const curLng = await parseQueryStringSync(req);
-    const dataArray = await findMarkerPosition(Number(curLat.lat), Number(curLng.lng));
-    res.render('map', {
-        user : req.user,
-        appKey : process.env.KAKAO_MAP,
-        mapArr : dataArray
-    });
+const setMarker = async(req, res) => {
+    console.log(req.body);
+    // const curLat = await parseQueryStringSync(req);
+    // const curLng = await parseQueryStringSync(req);
+    // const dataArray = await findMarkerPosition(Number(curLat.lat), Number(curLng.lng));
+    // res.send('map', {
+    //     mapArr : dataArray
+    // });
 }
 
 // 쿼리스트링 파싱하는 함수
@@ -82,5 +90,6 @@ function findMarkerPosition(curLat, curLng) {
 module.exports = {
     mapInit,
     detail,
-    getMarker
+    setMarker,
+    test
 }
