@@ -7,11 +7,12 @@ let ac3s = [];
 let stationOverlays = [];
 let map, zoomControl;
 
+loadJQuery();
 initMap(data);
 
 // if(navigator.geolocation) {
-//     navigator.geolocation.getCurrentPosition ((pos) => {
-//         curLatitude = pos.coords.latitude;
+    //     navigator.geolocation.getCurrentPosition ((pos) => {
+        //         curLatitude = pos.coords.latitude;
 //         curLongitude = pos.coords.longitude;
 //     });
 // } else {
@@ -38,7 +39,13 @@ initMap(data);
 async function initMap(data) {
     if(data.length === 0) {
         await getLocation();
-        location.href = `/map/getMarker?lat=${curLatitude}&lng=${curLongitude}`;
+        const body = await setData();
+        fetch('/map/setMarker', {
+            method : 'POST',
+            body : JSON.stringify(body)
+        }).then(res => res.json())
+        .then(response => console.log('success : ', JSON.stringify(response)))
+        .catch(err => console.error(err))
     } else {
         let position = await getLocation();
         let container = document.getElementById('map');
@@ -52,8 +59,31 @@ async function initMap(data) {
         // 지도 확대 축소를 제어할 수 있는  줌 컨트롤을 생성
         zoomControl = new kakao.maps.ZoomControl();
         map.addControl(zoomControl, kakao.maps.ControlPosition.RIGHT);
+        // 중심좌표나 확대 수준이 변경되면 나타나는 이벤트
+        kakao.maps.event.addListener(map, 'idle', async() => {
+            const url = '/map/test';
+            const body = await setData();
+
+            console.log(body);
+
+            await fetch(url, {
+                method : 'POST',
+                body
+            }).then(res => res.json())
+            .then(response => console.log('success : ', JSON.stringify(response)))
+            .catch(err => console.error(err))
+        });
         setCurMarker(position);
     }
+}
+
+function setData() {
+    return new Promise(async(resolve, reject) => {
+        return resolve({
+            lat : curLatitude,
+            lng : curLongitude
+        })
+    })
 }
 
 function getLocation(){
@@ -221,4 +251,12 @@ function initStationMarkers(){
 // 커스텀 오버레이 가시성 설정
 function closeOverlay(overlayIndex) {
     stationOverlays[overlayIndex].setMap(null);
+}
+
+function loadJQuery() {
+    var oScript = document.createElement("script");
+    oScript.type = "text/javascript";
+    oScript.charset = "utf-8";		  
+    oScript.src = "http://code.jquery.com/jquery-1.6.2.min.js";	
+    document.getElementsByTagName("head")[0].appendChild(oScript);
 }
