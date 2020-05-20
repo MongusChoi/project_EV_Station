@@ -74,13 +74,13 @@ function findMarkerPosition(curLat, curLng) {
             where : {
                 [Op.and] : [{
                     lat : {
-                        [Op.gte] : curLat - 0.003260869565217,
-                        [Op.lte] : curLat + 0.003260869565217
+                        [Op.gte] : curLat - 0.006521739130434,
+                        [Op.lte] : curLat + 0.006521739130434
                     }
                 }, {
                     lng : {
-                        [Op.gte] : curLng - 0.003260869565217,
-                        [Op.lte] : curLng + 0.003260869565217
+                        [Op.gte] : curLng - 0.006521739130434,
+                        [Op.lte] : curLng + 0.006521739130434
                     }
                 }]
             }
